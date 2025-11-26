@@ -19,9 +19,9 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">G</span>
-            </div>
+            <a href="#" className="w-12 h-8 rounded-lg bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-sm">GMS</span>
+            </a>
             <span className="text-foreground font-semibold text-lg tracking-wide">Geo Mineral Science</span>
           </div>
 
