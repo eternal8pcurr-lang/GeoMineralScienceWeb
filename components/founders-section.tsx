@@ -7,7 +7,7 @@ export function FoundersSection() {
       role: "Operations Leadership",
       description:
         "Overseeing all mining operations with a focus on efficiency, safety, and sustainable extraction practices.",
-      image: "/professional-male-executive-portrait-dark-backgrou.jpg",
+      image: "https://site-assets.plasmic.app/df7bfec0441b23581822834c9fc596fa.jpg",
     },
     {
       name: "Ken Currington",
