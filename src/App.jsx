@@ -64,6 +64,34 @@ const App = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Load Chatbase script
+  useEffect(() => {
+    // Set chatbase config
+    window.chatbaseConfig = {
+      chatbotId: "GQ5Qh8nJ6XRvgvVFwRqZa",
+      domain: "www.chatbase.co",
+      autoScroll: false
+    };
+
+    // Load the script
+    const script = document.createElement('script');
+    script.src = 'https://www.chatbase.co/embed.min.js';
+    script.id = 'GQ5Qh8nJ6XRvgvVFwRqZa';
+    script.defer = true;
+    document.head.appendChild(script);
+
+    return () => {
+      // Cleanup
+      const existingScript = document.getElementById('GQ5Qh8nJ6XRvgvVFwRqZa');
+      if (existingScript) {
+        document.head.removeChild(existingScript);
+      }
+      if (window.chatbaseConfig) {
+        delete window.chatbaseConfig;
+      }
+    };
+  }, []);
+
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
     if (element) {
@@ -131,12 +159,7 @@ const App = () => {
                   </div>
                 </div>
                 <div className="relative">
-                  <iframe
-                    src="https://www.chatbase.co/GQ5Qh8nJ6XRvgvVFwRqZa/help?scroll=false"
-                    className="w-full h-96 border-0 bg-stone-950"
-                    title="Geo Mineral Science AI Assistant"
-                    allow="microphone; camera; geolocation"
-                  ></iframe>
+                  <div id="chatbase-container" className="w-full h-96 bg-stone-950"></div>
                   <div className="absolute bottom-2 left-4 right-4">
                     <div className="bg-stone-900/90 backdrop-blur-sm border border-stone-700 px-3 py-2 rounded-lg">
                       <p className="text-stone-400 text-xs text-center">
