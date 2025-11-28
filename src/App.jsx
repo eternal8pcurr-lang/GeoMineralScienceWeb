@@ -17,18 +17,7 @@ import {
   FlaskConical
 } from 'lucide-react';
 
-// Load LangFlow embedded chat script
-useEffect(() => {
-  const script = document.createElement('script');
-  script.src = 'https://cdn.jsdelivr.net/gh/logspace-ai/langflow-embedded-chat@v1.0.7/dist/build/static/js/bundle.min.js';
-  script.async = true;
-  document.head.appendChild(script);
-
-  // Clean up
-  return () => {
-    document.head.removeChild(script);
-  };
-}, []);
+// This will be moved inside the component
 
 // Helper Component for Navigation Cards
 const NavCard = ({ icon, title, desc, onClick }) => (
@@ -71,6 +60,21 @@ const App = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Load LangFlow embedded chat script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/gh/logspace-ai/langflow-embedded-chat@v1.0.7/dist/build/static/js/bundle.min.js';
+    script.async = true;
+    document.head.appendChild(script);
+
+    // Clean up
+    return () => {
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
+    };
+  }, []);
 
   // Handle scroll for navbar transparency effect
   useEffect(() => {
