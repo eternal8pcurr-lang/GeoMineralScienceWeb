@@ -132,7 +132,7 @@ const App = () => {
                 </div>
                 <div className="relative">
                   <iframe
-                    src="https://www.chatbase.co/GQ5Qh8nJ6XRvgvVFwRqZa?embedded=true"
+                    src="https://www.chatbase.co/GQ5Qh8nJ6XRvgvVFwRqZa/help"
                     className="w-full h-96 border-0 bg-stone-950"
                     title="Geo Mineral Science AI Assistant"
                     allow="microphone; camera; geolocation"
