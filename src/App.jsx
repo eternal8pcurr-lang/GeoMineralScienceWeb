@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Mic,
-  Paperclip,
-  Image as ImageIcon,
-  Send,
   Users,
   Map,
   Cpu,
@@ -56,16 +52,13 @@ const PropertyCard = ({ name, status, desc, image }) => (
 );
 
 const App = () => {
-  const [query, setQuery] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
-  const [messages, setMessages] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Load LangFlow embedded chat script
+  // Load Chatbase chatbot script
   useEffect(() => {
+    // Add Chatbase script
     const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/gh/logspace-ai/langflow-embedded-chat@v1.0.7/dist/build/static/js/bundle.min.js';
-    script.async = true;
+    script.innerHTML = `(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="GQ5Qh8nJ6XRvgvVFwRqZa";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();`;
     document.head.appendChild(script);
 
     // Clean up
@@ -92,103 +85,8 @@ const App = () => {
     }
   };
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (!query.trim() || isLoading) return;
-
-    const userMessage = query.trim();
-    setQuery('');
-
-    // Add user message to chat
-    setMessages(prev => [...prev, { type: 'user', content: userMessage }]);
-    setIsLoading(true);
-
-    try {
-      // Try to use the embedded LangFlow widget's API
-      const chatWidget = document.getElementById('langflow-chat-widget');
-
-      if (chatWidget && window.LangflowChat) {
-        // If the widget has a global API, use it
-        console.log('Using LangFlow embedded widget API');
-        // Try common methods that embedded chat widgets expose
-        if (typeof window.LangflowChat.sendMessage === 'function') {
-          window.LangflowChat.sendMessage(userMessage);
-        } else if (chatWidget.sendMessage) {
-          chatWidget.sendMessage(userMessage);
-        } else {
-          // Try dispatching a custom event
-          const event = new CustomEvent('sendMessage', { detail: { message: userMessage } });
-          chatWidget.dispatchEvent(event);
-        }
-
-        // Listen for response from the widget
-        const handleResponse = (event) => {
-          const aiResponse = event.detail?.message || event.detail?.response || 'Response received from AI';
-          setMessages(prev => [...prev, { type: 'ai', content: aiResponse }]);
-          setIsLoading(false);
-          chatWidget.removeEventListener('messageReceived', handleResponse);
-        };
-
-        chatWidget.addEventListener('messageReceived', handleResponse);
-
-        // Fallback timeout in case the event doesn't fire
-        setTimeout(() => {
-          if (isLoading) {
-            setMessages(prev => [...prev, { type: 'ai', content: 'AI response received (via embedded widget)' }]);
-            setIsLoading(false);
-            chatWidget.removeEventListener('messageReceived', handleResponse);
-          }
-        }, 10000);
-
-      } else {
-        // Fallback to direct API call if widget isn't ready
-        console.log('Widget not ready, using direct API call');
-        const response = await fetch('https://rag.geomineralscience.com/api/v1/predict/b704bedd-86cd-4e93-9e10-ebab5790af8e', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            input_value: userMessage,
-            input_type: 'chat',
-            output_type: 'chat',
-            tweaks: {}
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log('Direct API Response:', data);
-
-        // Extract response from data
-        let aiResponse = data?.result || data?.message || data?.response || 'AI response received';
-        setMessages(prev => [...prev, { type: 'ai', content: aiResponse }]);
-      }
-    } catch (error) {
-      console.error('LangFlow error:', error);
-      setMessages(prev => [...prev, {
-        type: 'ai',
-        content: 'I apologize, but I encountered an error while processing your request. Please try again later.'
-      }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-stone-950 text-stone-200 font-sans selection:bg-amber-500 selection:text-stone-900">
-
-      {/* Hidden LangFlow Chat Widget */}
-      <langflow-chat
-        id="langflow-chat-widget"
-        style={{display: 'none'}}
-        window_title="Meet Pete Currington"
-        flow_id="b704bedd-86cd-4e93-9e10-ebab5790af8e"
-        host_url="https://rag.geomineralscience.com">
-      </langflow-chat>
 
       {/* Navigation Bar */}
       <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-stone-950/90 backdrop-blur-md border-b border-stone-800 py-3' : 'bg-transparent py-6'}`}>
@@ -235,66 +133,15 @@ const App = () => {
               <span className="text-2xl text-stone-300 mt-2 block">Assaying properties, technology, the people.</span>
             </h1>
 
-            {/* Chat Messages */}
-            {messages.length > 0 && (
-              <div className="mb-6 max-h-96 overflow-y-auto bg-stone-950/50 rounded-xl p-4 border border-stone-700">
-                {messages.map((message, index) => (
-                  <div key={index} className={`mb-4 ${message.type === 'user' ? 'text-right' : 'text-left'}`}>
-                    <div className={`inline-block max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
-                      message.type === 'user'
-                        ? 'bg-amber-600 text-white'
-                        : 'bg-stone-800 text-stone-100'
-                    }`}>
-                      <p className="text-sm">{message.content}</p>
-                    </div>
-                  </div>
-                ))}
-                {isLoading && (
-                  <div className="text-left mb-4">
-                    <div className="inline-block bg-stone-800 text-stone-100 px-4 py-2 rounded-2xl">
-                      <div className="flex items-center gap-2">
-                        <div className="flex gap-1">
-                          <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                          <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                        </div>
-                        <span className="text-sm">Thinking...</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
+            <div className="text-center">
+              <p className="text-stone-400 mb-6 text-lg">
+                Click the chat icon in the bottom right to ask questions about our prospecting operations, assaying technology, and mineral exploration properties.
+              </p>
+              <div className="inline-flex items-center gap-2 bg-stone-900/80 backdrop-blur-sm border border-stone-700 px-6 py-3 rounded-xl">
+                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-stone-300 text-sm">AI Assistant Ready</span>
               </div>
-            )}
-
-            <form onSubmit={handleSearch} className="relative group">
-              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                <Pickaxe className="h-5 w-5 text-stone-400" />
-              </div>
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Ask about assaying, prospecting, or our latest Maps 1580 data..."
-                className="w-full bg-stone-950/80 border border-stone-700 text-stone-100 pl-12 pr-32 py-5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all text-lg placeholder:text-stone-500"
-                disabled={isLoading}
-              />
-
-              {/* Prompt Tools */}
-              <div className="absolute inset-y-0 right-3 flex items-center gap-2">
-                <button type="button" className="p-2 hover:bg-stone-800 rounded-lg text-stone-400 hover:text-amber-400 transition-colors disabled:opacity-50" title="Voice Input" disabled={isLoading}>
-                  <Mic size={20} />
-                </button>
-                <button type="button" className="p-2 hover:bg-stone-800 rounded-lg text-stone-400 hover:text-amber-400 transition-colors disabled:opacity-50" title="Attach File" disabled={isLoading}>
-                  <Paperclip size={20} />
-                </button>
-                <button type="button" className="p-2 hover:bg-stone-800 rounded-lg text-stone-400 hover:text-amber-400 transition-colors disabled:opacity-50" title="Upload Image" disabled={isLoading}>
-                  <ImageIcon size={20} />
-                </button>
-                <button type="submit" className={`p-2 rounded-lg transition-colors shadow-lg shadow-amber-900/20 disabled:opacity-50 ${isLoading ? 'bg-stone-600 cursor-not-allowed' : 'bg-amber-600 hover:bg-amber-500 text-white'}`} disabled={isLoading}>
-                  <Send size={20} />
-                </button>
-              </div>
-            </form>
+            </div>
           </div>
 
           {/* Navigation Cards */}
