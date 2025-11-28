@@ -2,6 +2,14 @@ import { MessageSquare, FileText, BarChart3 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'langflow-chat': any;
+    }
+  }
+}
+
 export function InvestorPortal() {
   const features = [
     {
@@ -65,26 +73,13 @@ export function InvestorPortal() {
               </div>
 
               <div className="bg-background rounded-lg p-6 mb-4">
-                <p className="text-muted-foreground text-center py-8">
-                  Chat with our AI Agent to review geological reports, assay data, and project files instantly.
-                </p>
+                {/* @ts-ignore */}
+                <langflow-chat
+                  window_title="Meet Pete Currington"
+                  flow_id="b704bedd-86cd-4e93-9e10-ebab5790af8e"
+                  host_url="https://rag.geomineralscience.com">
+                </langflow-chat>
               </div>
-
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Ask about our investment opportunity..."
-                  className="flex-1 bg-background border border-border rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                  disabled
-                />
-                <Button className="bg-primary text-primary-foreground hover:bg-primary/90 px-4">
-                  <MessageSquare className="w-5 h-5" />
-                </Button>
-              </div>
-
-              <p className="text-muted-foreground text-xs text-center mt-4">
-                AI Assistant coming soon. Contact us directly for immediate assistance.
-              </p>
             </CardContent>
           </Card>
         </div>
