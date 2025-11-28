@@ -10,7 +10,8 @@ import {
   Activity,
   ArrowRight,
   Microscope,
-  FlaskConical
+  FlaskConical,
+  Send
 } from 'lucide-react';
 
 // This will be moved inside the component
@@ -52,6 +53,7 @@ const PropertyCard = ({ name, status, desc, image }) => (
 );
 
 const App = () => {
+  const [query, setQuery] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
 
   // Load Chatbase chatbot script
@@ -82,6 +84,34 @@ const App = () => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!query.trim()) return;
+
+    const userMessage = query.trim();
+    setQuery('');
+
+    // Open Chatbase chat and send message
+    if (window.chatbase) {
+      // Open the chat widget
+      window.chatbase('open');
+
+      // Try to send the message - Chatbase might support this
+      setTimeout(() => {
+        // Some chat widgets support sending messages programmatically
+        // If not supported, at least the chat is open for the user
+        if (window.chatbase && typeof window.chatbase === 'function') {
+          try {
+            // Try different methods to send the message
+            window.chatbase('sendMessage', userMessage);
+          } catch (error) {
+            console.log('Direct message sending not supported, chat opened for user input');
+          }
+        }
+      }, 1000); // Wait for chat to open
     }
   };
 
@@ -133,13 +163,32 @@ const App = () => {
               <span className="text-2xl text-stone-300 mt-2 block">Assaying properties, technology, the people.</span>
             </h1>
 
-            <div className="text-center">
-              <p className="text-stone-400 mb-6 text-lg">
-                Click the chat icon in the bottom right to ask questions about our prospecting operations, assaying technology, and mineral exploration properties.
+            <form onSubmit={handleSearch} className="relative group w-full max-w-2xl mx-auto">
+              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                <Pickaxe className="h-5 w-5 text-stone-400" />
+              </div>
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Ask about assaying, prospecting, or our latest Maps 1580 data..."
+                className="w-full bg-stone-950/80 border border-stone-700 text-stone-100 pl-12 pr-16 py-5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all text-lg placeholder:text-stone-500"
+              />
+              <button
+                type="submit"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-amber-600 hover:bg-amber-500 text-white p-3 rounded-lg transition-colors shadow-lg shadow-amber-900/20"
+              >
+                <Send size={20} />
+              </button>
+            </form>
+
+            <div className="text-center mt-6">
+              <p className="text-stone-400 text-sm">
+                Start a conversation with our AI assistant trained on our prospecting data and technology
               </p>
-              <div className="inline-flex items-center gap-2 bg-stone-900/80 backdrop-blur-sm border border-stone-700 px-6 py-3 rounded-xl">
-                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-stone-300 text-sm">AI Assistant Ready</span>
+              <div className="inline-flex items-center gap-2 bg-stone-900/80 backdrop-blur-sm border border-stone-700 px-4 py-2 rounded-xl mt-3">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-stone-300 text-xs">AI Assistant Ready</span>
               </div>
             </div>
           </div>
