@@ -19,7 +19,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <a href="#" className="w-12 h-8 rounded-lg bg-primary flex items-center justify-center">
+            <a href="#" className="w-12 h-8 bg-primary flex items-center justify-center" style={{clipPath: 'polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%)'}}>
               <span className="text-primary-foreground font-bold text-sm">GMS</span>
             </a>
             <span className="text-foreground font-semibold text-lg tracking-wide">Geo Mineral Science</span>
