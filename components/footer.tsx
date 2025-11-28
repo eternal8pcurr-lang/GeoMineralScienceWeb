@@ -7,8 +7,8 @@ export function Footer() {
         <div className="grid md:grid-cols-3 gap-12 mb-12">
           <div>
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">G</span>
+              <div className="w-12 h-8 bg-primary flex items-center justify-center" style={{clipPath: 'polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%)'}}>
+                <span className="text-primary-foreground font-bold text-sm">GMS</span>
               </div>
               <span className="text-foreground font-semibold text-lg">Geo Mineral Science LLC</span>
             </div>
