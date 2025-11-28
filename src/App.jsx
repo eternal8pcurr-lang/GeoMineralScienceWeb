@@ -56,6 +56,8 @@ const PropertyCard = ({ name, status, desc, image }) => (
 const App = () => {
   const [query, setQuery] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Handle scroll for navbar transparency effect
   useEffect(() => {
@@ -73,11 +75,56 @@ const App = () => {
     }
   };
 
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
-    if (!query) return;
-    setQuery("Searching internal database for geological data...");
-    setTimeout(() => setQuery(''), 2000);
+    if (!query.trim() || isLoading) return;
+
+    const userMessage = query.trim();
+    setQuery('');
+
+    // Add user message to chat
+    setMessages(prev => [...prev, { type: 'user', content: userMessage }]);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('https://rag.geomineralscience.com/api/v1/run/b704bedd-86cd-4e93-9e10-ebab5790af8e', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: userMessage }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      // Extract the response message from LangFlow response
+      let aiResponse = 'I apologize, but I couldn\'t process your request at this time.';
+
+      if (data && data.outputs && data.outputs.length > 0) {
+        // Try to find the message in the outputs
+        const output = data.outputs[0];
+        if (output && output.outputs && output.outputs.length > 0) {
+          const messageOutput = output.outputs.find(out => out.message);
+          if (messageOutput && messageOutput.message) {
+            aiResponse = messageOutput.message;
+          }
+        }
+      }
+
+      setMessages(prev => [...prev, { type: 'ai', content: aiResponse }]);
+    } catch (error) {
+      console.error('LangFlow API error:', error);
+      setMessages(prev => [...prev, {
+        type: 'ai',
+        content: 'I apologize, but I encountered an error while processing your request. Please try again later.'
+      }]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -128,6 +175,37 @@ const App = () => {
               <span className="text-2xl text-stone-300 mt-2 block">Assaying properties, technology, the people.</span>
             </h1>
 
+            {/* Chat Messages */}
+            {messages.length > 0 && (
+              <div className="mb-6 max-h-96 overflow-y-auto bg-stone-950/50 rounded-xl p-4 border border-stone-700">
+                {messages.map((message, index) => (
+                  <div key={index} className={`mb-4 ${message.type === 'user' ? 'text-right' : 'text-left'}`}>
+                    <div className={`inline-block max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
+                      message.type === 'user'
+                        ? 'bg-amber-600 text-white'
+                        : 'bg-stone-800 text-stone-100'
+                    }`}>
+                      <p className="text-sm">{message.content}</p>
+                    </div>
+                  </div>
+                ))}
+                {isLoading && (
+                  <div className="text-left mb-4">
+                    <div className="inline-block bg-stone-800 text-stone-100 px-4 py-2 rounded-2xl">
+                      <div className="flex items-center gap-2">
+                        <div className="flex gap-1">
+                          <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                          <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                        </div>
+                        <span className="text-sm">Thinking...</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             <form onSubmit={handleSearch} className="relative group">
               <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
                 <Pickaxe className="h-5 w-5 text-stone-400" />
@@ -138,20 +216,21 @@ const App = () => {
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Ask about assaying, prospecting, or our latest Maps 1580 data..."
                 className="w-full bg-stone-950/80 border border-stone-700 text-stone-100 pl-12 pr-32 py-5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all text-lg placeholder:text-stone-500"
+                disabled={isLoading}
               />
 
               {/* Prompt Tools */}
               <div className="absolute inset-y-0 right-3 flex items-center gap-2">
-                <button type="button" className="p-2 hover:bg-stone-800 rounded-lg text-stone-400 hover:text-amber-400 transition-colors" title="Voice Input">
+                <button type="button" className="p-2 hover:bg-stone-800 rounded-lg text-stone-400 hover:text-amber-400 transition-colors disabled:opacity-50" title="Voice Input" disabled={isLoading}>
                   <Mic size={20} />
                 </button>
-                <button type="button" className="p-2 hover:bg-stone-800 rounded-lg text-stone-400 hover:text-amber-400 transition-colors" title="Attach File">
+                <button type="button" className="p-2 hover:bg-stone-800 rounded-lg text-stone-400 hover:text-amber-400 transition-colors disabled:opacity-50" title="Attach File" disabled={isLoading}>
                   <Paperclip size={20} />
                 </button>
-                <button type="button" className="p-2 hover:bg-stone-800 rounded-lg text-stone-400 hover:text-amber-400 transition-colors" title="Upload Image">
+                <button type="button" className="p-2 hover:bg-stone-800 rounded-lg text-stone-400 hover:text-amber-400 transition-colors disabled:opacity-50" title="Upload Image" disabled={isLoading}>
                   <ImageIcon size={20} />
                 </button>
-                <button type="submit" className="bg-amber-600 hover:bg-amber-500 text-white p-2 rounded-lg transition-colors shadow-lg shadow-amber-900/20">
+                <button type="submit" className={`p-2 rounded-lg transition-colors shadow-lg shadow-amber-900/20 disabled:opacity-50 ${isLoading ? 'bg-stone-600 cursor-not-allowed' : 'bg-amber-600 hover:bg-amber-500 text-white'}`} disabled={isLoading}>
                   <Send size={20} />
                 </button>
               </div>
