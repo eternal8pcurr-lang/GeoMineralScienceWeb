@@ -16,11 +16,11 @@ export function FoundersSection() {
       image: "https://site-assets.plasmic.app/8b433aaf03fee8407942f737f95e15e6.jpg",
     },
     {
-      name: "Ben Siminocci",
+      name: "Ben Simoncini",
       role: "Lead Prospector & Geologist",
       description:
         "Known for his legendary 'Golden Eye' — an unparalleled talent for identifying high-yield properties rich in gold and silver.",
-      image: "/rugged-male-geologist-prospector-portrait-outdoors.jpg",
+      image: "https://site-assets.plasmic.app/7cd1ccc69b7ca4fb9e231f721d3c5b99.jpg",
     },
   ]
 
