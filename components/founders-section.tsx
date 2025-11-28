@@ -13,7 +13,7 @@ export function FoundersSection() {
       name: "Ken Currington",
       role: "Strategic Leadership",
       description: "Driving strategic vision and investor relations, ensuring long-term growth and profitability.",
-      image: "/professional-male-business-leader-portrait-dark-ba.jpg",
+      image: "https://site-assets.plasmic.app/8b433aaf03fee8407942f737f95e15e6.jpg",
     },
     {
       name: "Ben Siminocci",
