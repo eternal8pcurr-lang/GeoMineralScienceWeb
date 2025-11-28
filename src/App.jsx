@@ -53,23 +53,7 @@ const PropertyCard = ({ name, status, desc, image }) => (
 );
 
 const App = () => {
-  const [query, setQuery] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
-
-  // Load Chatbase chatbot script
-  useEffect(() => {
-    // Add Chatbase script
-    const script = document.createElement('script');
-    script.innerHTML = `(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="GQ5Qh8nJ6XRvgvVFwRqZa";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();`;
-    document.head.appendChild(script);
-
-    // Clean up
-    return () => {
-      if (document.head.contains(script)) {
-        document.head.removeChild(script);
-      }
-    };
-  }, []);
 
   // Handle scroll for navbar transparency effect
   useEffect(() => {
@@ -84,34 +68,6 @@ const App = () => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-
-    const userMessage = query.trim();
-    setQuery('');
-
-    // Open Chatbase chat and send message
-    if (window.chatbase) {
-      // Open the chat widget
-      window.chatbase('open');
-
-      // Try to send the message - Chatbase might support this
-      setTimeout(() => {
-        // Some chat widgets support sending messages programmatically
-        // If not supported, at least the chat is open for the user
-        if (window.chatbase && typeof window.chatbase === 'function') {
-          try {
-            // Try different methods to send the message
-            window.chatbase('sendMessage', userMessage);
-          } catch (error) {
-            console.log('Direct message sending not supported, chat opened for user input');
-          }
-        }
-      }, 1000); // Wait for chat to open
     }
   };
 
@@ -163,32 +119,32 @@ const App = () => {
               <span className="text-2xl text-stone-300 mt-2 block">Assaying properties, technology, the people.</span>
             </h1>
 
-            <form onSubmit={handleSearch} className="relative group w-full max-w-2xl mx-auto">
-              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                <Pickaxe className="h-5 w-5 text-stone-400" />
-              </div>
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Ask about assaying, prospecting, or our latest Maps 1580 data..."
-                className="w-full bg-stone-950/80 border border-stone-700 text-stone-100 pl-12 pr-16 py-5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all text-lg placeholder:text-stone-500"
-              />
-              <button
-                type="submit"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-amber-600 hover:bg-amber-500 text-white p-3 rounded-lg transition-colors shadow-lg shadow-amber-900/20"
-              >
-                <Send size={20} />
-              </button>
-            </form>
-
-            <div className="text-center mt-6">
-              <p className="text-stone-400 text-sm">
-                Start a conversation with our AI assistant trained on our prospecting data and technology
-              </p>
-              <div className="inline-flex items-center gap-2 bg-stone-900/80 backdrop-blur-sm border border-stone-700 px-4 py-2 rounded-xl mt-3">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-stone-300 text-xs">AI Assistant Ready</span>
+            {/* Embedded Chatbase Chat Interface */}
+            <div className="w-full max-w-4xl mx-auto">
+              <div className="bg-stone-900/60 backdrop-blur-xl border border-amber-500/30 rounded-2xl shadow-2xl shadow-amber-900/20 overflow-hidden">
+                <div className="p-4 border-b border-stone-700">
+                  <div className="flex items-center gap-3">
+                    <div className="h-3 w-3 rounded-full bg-red-500"></div>
+                    <div className="h-3 w-3 rounded-full bg-amber-500"></div>
+                    <div className="h-3 w-3 rounded-full bg-green-500"></div>
+                    <span className="ml-auto text-xs text-amber-500 font-mono tracking-widest">GMS-AI ASSISTANT</span>
+                  </div>
+                </div>
+                <div className="relative">
+                  <iframe
+                    src="https://www.chatbase.co/GQ5Qh8nJ6XRvgvVFwRqZa/help"
+                    className="w-full h-96 border-0 bg-stone-950"
+                    title="Geo Mineral Science AI Assistant"
+                    allow="microphone; camera; geolocation"
+                  ></iframe>
+                  <div className="absolute bottom-2 left-4 right-4">
+                    <div className="bg-stone-900/90 backdrop-blur-sm border border-stone-700 px-3 py-2 rounded-lg">
+                      <p className="text-stone-400 text-xs text-center">
+                        💡 Ask about our prospecting operations, Maps 1580 technology, or mineral exploration properties
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
