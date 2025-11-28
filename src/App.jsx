@@ -17,6 +17,19 @@ import {
   FlaskConical
 } from 'lucide-react';
 
+// Load LangFlow embedded chat script
+useEffect(() => {
+  const script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/gh/logspace-ai/langflow-embedded-chat@v1.0.7/dist/build/static/js/bundle.min.js';
+  script.async = true;
+  document.head.appendChild(script);
+
+  // Clean up
+  return () => {
+    document.head.removeChild(script);
+  };
+}, []);
+
 // Helper Component for Navigation Cards
 const NavCard = ({ icon, title, desc, onClick }) => (
   <button
@@ -87,37 +100,71 @@ const App = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('https://rag.geomineralscience.com/api/v1/run/b704bedd-86cd-4e93-9e10-ebab5790af8e', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message: userMessage }),
-      });
+      // Try to use the embedded LangFlow widget's API
+      const chatWidget = document.getElementById('langflow-chat-widget');
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      // Extract the response message from LangFlow response
-      let aiResponse = 'I apologize, but I couldn\'t process your request at this time.';
-
-      if (data && data.outputs && data.outputs.length > 0) {
-        // Try to find the message in the outputs
-        const output = data.outputs[0];
-        if (output && output.outputs && output.outputs.length > 0) {
-          const messageOutput = output.outputs.find(out => out.message);
-          if (messageOutput && messageOutput.message) {
-            aiResponse = messageOutput.message;
-          }
+      if (chatWidget && window.LangflowChat) {
+        // If the widget has a global API, use it
+        console.log('Using LangFlow embedded widget API');
+        // Try common methods that embedded chat widgets expose
+        if (typeof window.LangflowChat.sendMessage === 'function') {
+          window.LangflowChat.sendMessage(userMessage);
+        } else if (chatWidget.sendMessage) {
+          chatWidget.sendMessage(userMessage);
+        } else {
+          // Try dispatching a custom event
+          const event = new CustomEvent('sendMessage', { detail: { message: userMessage } });
+          chatWidget.dispatchEvent(event);
         }
-      }
 
-      setMessages(prev => [...prev, { type: 'ai', content: aiResponse }]);
+        // Listen for response from the widget
+        const handleResponse = (event) => {
+          const aiResponse = event.detail?.message || event.detail?.response || 'Response received from AI';
+          setMessages(prev => [...prev, { type: 'ai', content: aiResponse }]);
+          setIsLoading(false);
+          chatWidget.removeEventListener('messageReceived', handleResponse);
+        };
+
+        chatWidget.addEventListener('messageReceived', handleResponse);
+
+        // Fallback timeout in case the event doesn't fire
+        setTimeout(() => {
+          if (isLoading) {
+            setMessages(prev => [...prev, { type: 'ai', content: 'AI response received (via embedded widget)' }]);
+            setIsLoading(false);
+            chatWidget.removeEventListener('messageReceived', handleResponse);
+          }
+        }, 10000);
+
+      } else {
+        // Fallback to direct API call if widget isn't ready
+        console.log('Widget not ready, using direct API call');
+        const response = await fetch('https://rag.geomineralscience.com/api/v1/predict/b704bedd-86cd-4e93-9e10-ebab5790af8e', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            input_value: userMessage,
+            input_type: 'chat',
+            output_type: 'chat',
+            tweaks: {}
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Direct API Response:', data);
+
+        // Extract response from data
+        let aiResponse = data?.result || data?.message || data?.response || 'AI response received';
+        setMessages(prev => [...prev, { type: 'ai', content: aiResponse }]);
+      }
     } catch (error) {
-      console.error('LangFlow API error:', error);
+      console.error('LangFlow error:', error);
       setMessages(prev => [...prev, {
         type: 'ai',
         content: 'I apologize, but I encountered an error while processing your request. Please try again later.'
@@ -129,6 +176,15 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-stone-950 text-stone-200 font-sans selection:bg-amber-500 selection:text-stone-900">
+
+      {/* Hidden LangFlow Chat Widget */}
+      <langflow-chat
+        id="langflow-chat-widget"
+        style={{display: 'none'}}
+        window_title="Meet Pete Currington"
+        flow_id="b704bedd-86cd-4e93-9e10-ebab5790af8e"
+        host_url="https://rag.geomineralscience.com">
+      </langflow-chat>
 
       {/* Navigation Bar */}
       <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-stone-950/90 backdrop-blur-md border-b border-stone-800 py-3' : 'bg-transparent py-6'}`}>
