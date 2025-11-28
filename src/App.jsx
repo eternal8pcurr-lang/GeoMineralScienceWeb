@@ -104,45 +104,29 @@ const App = () => {
         {/* Content */}
         <div className="relative z-10 w-full max-w-4xl flex flex-col items-center space-y-12 pt-20">
 
-          {/* Main LLM Prompt Box */}
-          <div className="w-full bg-stone-900/60 backdrop-blur-xl border border-amber-500/30 rounded-2xl shadow-2xl shadow-amber-900/20 p-6 md:p-8 transform transition-all hover:border-amber-500/50">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-3 w-3 rounded-full bg-red-500"></div>
-              <div className="h-3 w-3 rounded-full bg-amber-500"></div>
-              <div className="h-3 w-3 rounded-full bg-green-500"></div>
-              <span className="ml-auto text-xs text-amber-500 font-mono tracking-widest">GMS-AI V.2.0</span>
-            </div>
-
-            <h1 className="text-3xl md:text-4xl font-light text-center mb-8 text-white leading-relaxed">
-              Hello, learn about <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-600">GeoMineralScience.</span>
-              <br />
-              <span className="text-2xl text-stone-300 mt-2 block">Assaying properties, technology, the people.</span>
-            </h1>
-
-            {/* Embedded Chatbase Chat Interface */}
-            <div className="w-full max-w-4xl mx-auto">
-              <div className="bg-stone-900/60 backdrop-blur-xl border border-amber-500/30 rounded-2xl shadow-2xl shadow-amber-900/20 overflow-hidden">
-                <div className="p-4 border-b border-stone-700">
-                  <div className="flex items-center gap-3">
-                    <div className="h-3 w-3 rounded-full bg-red-500"></div>
-                    <div className="h-3 w-3 rounded-full bg-amber-500"></div>
-                    <div className="h-3 w-3 rounded-full bg-green-500"></div>
-                    <span className="ml-auto text-xs text-amber-500 font-mono tracking-widest">GMS-AI ASSISTANT</span>
-                  </div>
+          {/* Embedded Chatbase Chat Interface */}
+          <div className="w-full max-w-4xl mx-auto">
+            <div className="bg-stone-900/60 backdrop-blur-xl border border-amber-500/30 rounded-2xl shadow-2xl shadow-amber-900/20 overflow-hidden">
+              <div className="p-4 border-b border-stone-700">
+                <div className="flex items-center gap-3">
+                  <div className="h-3 w-3 rounded-full bg-red-500"></div>
+                  <div className="h-3 w-3 rounded-full bg-amber-500"></div>
+                  <div className="h-3 w-3 rounded-full bg-green-500"></div>
+                  <span className="ml-auto text-xs text-amber-500 font-mono tracking-widest">GMS-AI ASSISTANT</span>
                 </div>
-                <div className="relative">
-                  <iframe
-                    src="https://www.chatbase.co/GQ5Qh8nJ6XRvgvVFwRqZa/help"
-                    className="w-full h-96 border-0 bg-stone-950"
-                    title="Geo Mineral Science AI Assistant"
-                    allow="microphone; camera; geolocation"
-                  ></iframe>
-                  <div className="absolute bottom-2 left-4 right-4">
-                    <div className="bg-stone-900/90 backdrop-blur-sm border border-stone-700 px-3 py-2 rounded-lg">
-                      <p className="text-stone-400 text-xs text-center">
-                        💡 Ask about our prospecting operations, Maps 1580 technology, or mineral exploration properties
-                      </p>
-                    </div>
+              </div>
+              <div className="relative">
+                <iframe
+                  src="/help"
+                  className="w-full h-[400px] border-0 bg-stone-950"
+                  title="Geo Mineral Science AI Assistant"
+                  allow="microphone; camera; geolocation"
+                ></iframe>
+                <div className="absolute bottom-2 left-4 right-4">
+                  <div className="bg-stone-900/90 backdrop-blur-sm border border-stone-700 px-3 py-2 rounded-lg">
+                    <p className="text-stone-400 text-xs text-center">
+                      💡 Ask about our prospecting operations, Maps 1580 technology, or mineral exploration properties
+                    </p>
                   </div>
                 </div>
               </div>
