@@ -183,16 +183,30 @@ const App = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="group bg-stone-900 border border-stone-800 p-6 rounded-xl hover:border-amber-500/50 transition-all duration-300">
-                <div className="w-24 h-24 rounded-full bg-stone-800 mb-4 mx-auto overflow-hidden border-2 border-stone-700 group-hover:border-amber-500">
-                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=Geologist${i}`} alt="Team Member" />
+            {[1, 2, 3, 4].map((i) => {
+              const teamData = i === 1 ? {
+                name: "Pete Currington",
+                title: "Operations Leadership",
+                desc: "Overseeing all mining operations with a focus on efficiency, safety, and sustainable extraction practices.",
+                image: "https://site-assets.plasmic.app/df7bfec0441b23581822834c9fc596fa.jpg"
+              } : {
+                name: `Expert ${i}`,
+                title: "Senior Geologist",
+                desc: "Specializing in sediment analysis and prospecting strategies in the Nevada basin.",
+                image: `https://api.dicebear.com/7.x/avataaars/svg?seed=Geologist${i}`
+              };
+
+              return (
+                <div key={i} className="group bg-stone-900 border border-stone-800 p-6 rounded-xl hover:border-amber-500/50 transition-all duration-300">
+                  <div className="w-24 h-24 rounded-full bg-stone-800 mb-4 mx-auto overflow-hidden border-2 border-stone-700 group-hover:border-amber-500">
+                    <img src={teamData.image} alt="Team Member" />
+                  </div>
+                  <h3 className="text-xl font-bold text-center text-white">{teamData.name}</h3>
+                  <p className="text-amber-500 text-center text-sm mb-4">{teamData.title}</p>
+                  <p className="text-stone-400 text-sm text-center">{teamData.desc}</p>
                 </div>
-                <h3 className="text-xl font-bold text-center text-white">Expert {i}</h3>
-                <p className="text-amber-500 text-center text-sm mb-4">Senior Geologist</p>
-                <p className="text-stone-400 text-sm text-center">Specializing in sediment analysis and prospecting strategies in the Nevada basin.</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
