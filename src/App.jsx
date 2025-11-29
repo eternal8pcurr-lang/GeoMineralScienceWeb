@@ -221,7 +221,7 @@ const App = () => {
             <div className="lg:col-span-2 relative group overflow-hidden rounded-2xl border border-stone-700">
               <div className="absolute inset-0 bg-stone-900/40 group-hover:bg-stone-900/20 transition-all z-10"></div>
               <img
-                src="https://images.unsplash.com/photo-1547531455-c20b67362804?q=80&w=2000&auto=format&fit=crop"
+                src="https://images.unsplash.com/photo-1548567117-d7607ea0b7b6?q=80&w=2940&auto=format&fit=crop"
                 alt="The Courbet"
                 className="w-full h-96 object-cover transform group-hover:scale-105 transition-transform duration-700"
               />
