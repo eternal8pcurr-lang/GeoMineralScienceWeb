@@ -54,6 +54,7 @@ const PropertyCard = ({ name, status, desc, image }) => (
 
 const App = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [chatSrc, setChatSrc] = useState('/help');
 
   // Handle scroll for navbar transparency effect
   useEffect(() => {
@@ -62,6 +63,15 @@ const App = () => {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Set chat src based on environment
+  useEffect(() => {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      setChatSrc('https://www.chatbase.co/GQ5Qh8nJ6XRvgvVFwRqZa/help');
+    } else {
+      setChatSrc('/help');
+    }
   }, []);
 
   const scrollToSection = (id) => {
@@ -117,7 +127,7 @@ const App = () => {
               </div>
               <div className="relative">
                 <iframe
-                  src="/help"
+                  src={chatSrc}
                   className="w-full h-[400px] border-0 bg-stone-950"
                   title="Geo Mineral Science AI Assistant"
                   allow="microphone; camera; geolocation"
