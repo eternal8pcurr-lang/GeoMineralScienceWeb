@@ -65,13 +65,9 @@ const App = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Set chat src based on environment
+  // Set chat src
   useEffect(() => {
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      setChatSrc('https://www.chatbase.co/GQ5Qh8nJ6XRvgvVFwRqZa/help');
-    } else {
-      setChatSrc('/help');
-    }
+    setChatSrc('https://www.chatbase.co/GQ5Qh8nJ6XRvgvVFwRqZa/help');
   }, []);
 
   const scrollToSection = (id) => {
