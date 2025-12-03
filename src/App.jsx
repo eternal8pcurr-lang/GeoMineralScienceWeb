@@ -54,6 +54,7 @@ const PropertyCard = ({ name, status, desc, image }) => (
 
 const App = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [chatSrc, setChatSrc] = useState('/help');
 
   // Handle scroll for navbar transparency effect
   useEffect(() => {
@@ -62,6 +63,11 @@ const App = () => {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Set chat src
+  useEffect(() => {
+    setChatSrc('https://www.chatbase.co/GQ5Qh8nJ6XRvgvVFwRqZa/help');
   }, []);
 
   const scrollToSection = (id) => {
@@ -94,7 +100,7 @@ const App = () => {
         {/* Background Image with Overlay */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1548567117-d7607ea0b7b6?q=80&w=2940&auto=format&fit=crop"
+            src="https://site-assets.plasmic.app/5155759d1ad1f278bc8eef4c0c17d24f.jpg"
             alt="Nevada Landscape"
             className="w-full h-full object-cover"
           />
@@ -104,45 +110,29 @@ const App = () => {
         {/* Content */}
         <div className="relative z-10 w-full max-w-4xl flex flex-col items-center space-y-12 pt-20">
 
-          {/* Main LLM Prompt Box */}
-          <div className="w-full bg-stone-900/60 backdrop-blur-xl border border-amber-500/30 rounded-2xl shadow-2xl shadow-amber-900/20 p-6 md:p-8 transform transition-all hover:border-amber-500/50">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-3 w-3 rounded-full bg-red-500"></div>
-              <div className="h-3 w-3 rounded-full bg-amber-500"></div>
-              <div className="h-3 w-3 rounded-full bg-green-500"></div>
-              <span className="ml-auto text-xs text-amber-500 font-mono tracking-widest">GMS-AI V.2.0</span>
-            </div>
-
-            <h1 className="text-3xl md:text-4xl font-light text-center mb-8 text-white leading-relaxed">
-              Hello, learn about <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-600">GeoMineralScience.</span>
-              <br />
-              <span className="text-2xl text-stone-300 mt-2 block">Assaying properties, technology, the people.</span>
-            </h1>
-
-            {/* Embedded Chatbase Chat Interface */}
-            <div className="w-full max-w-4xl mx-auto">
-              <div className="bg-stone-900/60 backdrop-blur-xl border border-amber-500/30 rounded-2xl shadow-2xl shadow-amber-900/20 overflow-hidden">
-                <div className="p-4 border-b border-stone-700">
-                  <div className="flex items-center gap-3">
-                    <div className="h-3 w-3 rounded-full bg-red-500"></div>
-                    <div className="h-3 w-3 rounded-full bg-amber-500"></div>
-                    <div className="h-3 w-3 rounded-full bg-green-500"></div>
-                    <span className="ml-auto text-xs text-amber-500 font-mono tracking-widest">GMS-AI ASSISTANT</span>
-                  </div>
+          {/* Embedded Chatbase Chat Interface */}
+          <div className="w-full max-w-4xl mx-auto">
+            <div className="bg-stone-900/60 backdrop-blur-xl border border-amber-500/30 rounded-2xl shadow-2xl shadow-amber-900/20 overflow-hidden">
+              <div className="p-4 border-b border-stone-700">
+                <div className="flex items-center gap-3">
+                  <div className="h-3 w-3 rounded-full bg-red-500"></div>
+                  <div className="h-3 w-3 rounded-full bg-amber-500"></div>
+                  <div className="h-3 w-3 rounded-full bg-green-500"></div>
+                  <span className="ml-auto text-xs text-amber-500 font-mono tracking-widest">GMS-AI ASSISTANT</span>
                 </div>
-                <div className="relative">
-                  <iframe
-                    src="https://www.chatbase.co/GQ5Qh8nJ6XRvgvVFwRqZa/help"
-                    className="w-full h-96 border-0 bg-stone-950"
-                    title="Geo Mineral Science AI Assistant"
-                    allow="microphone; camera; geolocation"
-                  ></iframe>
-                  <div className="absolute bottom-2 left-4 right-4">
-                    <div className="bg-stone-900/90 backdrop-blur-sm border border-stone-700 px-3 py-2 rounded-lg">
-                      <p className="text-stone-400 text-xs text-center">
-                        💡 Ask about our prospecting operations, Maps 1580 technology, or mineral exploration properties
-                      </p>
-                    </div>
+              </div>
+              <div className="relative">
+                <iframe
+                  src={chatSrc}
+                  className="w-full h-[400px] border-0 bg-stone-950"
+                  title="Geo Mineral Science AI Assistant"
+                  allow="microphone; camera; geolocation"
+                ></iframe>
+                <div className="absolute bottom-2 left-4 right-4">
+                  <div className="bg-stone-900/90 backdrop-blur-sm border border-stone-700 px-3 py-2 rounded-lg">
+                    <p className="text-stone-400 text-xs text-center">
+                      💡 Ask about our prospecting operations, Maps 1580 technology, or mineral exploration properties
+                    </p>
                   </div>
                 </div>
               </div>
@@ -188,17 +178,36 @@ const App = () => {
             <p className="text-stone-400 text-lg">Decades of combined experience in mineral exploration.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="group bg-stone-900 border border-stone-800 p-6 rounded-xl hover:border-amber-500/50 transition-all duration-300">
-                <div className="w-24 h-24 rounded-full bg-stone-800 mb-4 mx-auto overflow-hidden border-2 border-stone-700 group-hover:border-amber-500">
-                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=Geologist${i}`} alt="Team Member" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3].map((i) => {
+              const teamData = i === 1 ? {
+                name: "Pete Currington",
+                title: "Operations Leadership",
+                desc: "Overseeing all mining operations with a focus on efficiency, safety, and sustainable extraction practices.",
+                image: "https://site-assets.plasmic.app/df7bfec0441b23581822834c9fc596fa.jpg"
+              } : i === 2 ? {
+                name: "Ken Currington",
+                title: "Strategic Leadership",
+                desc: "Driving strategic vision and investor relations, ensuring long-term growth and profitability.",
+                image: "https://site-assets.plasmic.app/8b433aaf03fee8407942f737f95e15e6.jpg"
+              } : {
+                name: "Ben Simoncini",
+                title: "Lead Prospector & Geologist",
+                desc: "Known for his legendary 'Golden Eye' — an unparalleled talent for identifying high-yield properties rich in gold and silver.",
+                image: "https://site-assets.plasmic.app/7cd1ccc69b7ca4fb9e231f721d3c5b99.jpg"
+              } ;
+
+              return (
+                <div key={i} className="group bg-stone-900 border border-stone-800 p-6 rounded-xl hover:border-amber-500/50 transition-all duration-300">
+                  <div className="w-24 h-24 rounded-full bg-stone-800 mb-4 mx-auto overflow-hidden border-2 border-stone-700 group-hover:border-amber-500">
+                    <img src={teamData.image} alt="Team Member" />
+                  </div>
+                  <h3 className="text-xl font-bold text-center text-white">{teamData.name}</h3>
+                  <p className="text-amber-500 text-center text-sm mb-4">{teamData.title}</p>
+                  <p className="text-stone-400 text-sm text-center">{teamData.desc}</p>
                 </div>
-                <h3 className="text-xl font-bold text-center text-white">Expert {i}</h3>
-                <p className="text-amber-500 text-center text-sm mb-4">Senior Geologist</p>
-                <p className="text-stone-400 text-sm text-center">Specializing in sediment analysis and prospecting strategies in the Nevada basin.</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
@@ -217,7 +226,7 @@ const App = () => {
             <div className="lg:col-span-2 relative group overflow-hidden rounded-2xl border border-stone-700">
               <div className="absolute inset-0 bg-stone-900/40 group-hover:bg-stone-900/20 transition-all z-10"></div>
               <img
-                src="https://images.unsplash.com/photo-1547531455-c20b67362804?q=80&w=2000&auto=format&fit=crop"
+                src="https://site-assets.plasmic.app/5155759d1ad1f278bc8eef4c0c17d24f.jpg"
                 alt="The Courbet"
                 className="w-full h-96 object-cover transform group-hover:scale-105 transition-transform duration-700"
               />
@@ -230,10 +239,10 @@ const App = () => {
 
             {/* Up and Coming */}
             <PropertyCard
-              name="Jungle Canyon"
+              name="Jungo Canyon"
               status="Up-and-Coming"
               desc="High potential geological formations identified in preliminary scans."
-              image="https://images.unsplash.com/photo-1622588699104-585a21087e50?q=80&w=1000&auto=format&fit=crop"
+              image="https://site-assets.plasmic.app/c23c0a5ad405836e4cfd269d36c905e1.jpg"
             />
             <PropertyCard
               name="Benita Canyon"

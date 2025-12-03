@@ -10,4 +10,13 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    proxy: {
+      '/help': {
+        target: 'https://www.chatbase.co',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/help/, '/GQ5Qh8nJ6XRvgvVFwRqZa/help')
+      }
+    }
+  }
 })
