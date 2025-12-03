@@ -100,7 +100,7 @@ const App = () => {
         {/* Background Image with Overlay */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1548567117-d7607ea0b7b6?q=80&w=2940&auto=format&fit=crop"
+            src="https://site-assets.plasmic.app/5155759d1ad1f278bc8eef4c0c17d24f.jpg"
             alt="Nevada Landscape"
             className="w-full h-full object-cover"
           />
@@ -178,19 +178,24 @@ const App = () => {
             <p className="text-stone-400 text-lg">Decades of combined experience in mineral exploration.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[1, 2, 3, 4].map((i) => {
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3].map((i) => {
               const teamData = i === 1 ? {
                 name: "Pete Currington",
                 title: "Operations Leadership",
                 desc: "Overseeing all mining operations with a focus on efficiency, safety, and sustainable extraction practices.",
                 image: "https://site-assets.plasmic.app/df7bfec0441b23581822834c9fc596fa.jpg"
+              } : i === 2 ? {
+                name: "Ken Currington",
+                title: "Strategic Leadership",
+                desc: "Driving strategic vision and investor relations, ensuring long-term growth and profitability.",
+                image: "https://site-assets.plasmic.app/8b433aaf03fee8407942f737f95e15e6.jpg"
               } : {
-                name: `Expert ${i}`,
-                title: "Senior Geologist",
-                desc: "Specializing in sediment analysis and prospecting strategies in the Nevada basin.",
-                image: `https://api.dicebear.com/7.x/avataaars/svg?seed=Geologist${i}`
-              };
+                name: "Ben Simoncini",
+                title: "Lead Prospector & Geologist",
+                desc: "Known for his legendary 'Golden Eye' — an unparalleled talent for identifying high-yield properties rich in gold and silver.",
+                image: "https://site-assets.plasmic.app/7cd1ccc69b7ca4fb9e231f721d3c5b99.jpg"
+              } ;
 
               return (
                 <div key={i} className="group bg-stone-900 border border-stone-800 p-6 rounded-xl hover:border-amber-500/50 transition-all duration-300">
@@ -221,7 +226,7 @@ const App = () => {
             <div className="lg:col-span-2 relative group overflow-hidden rounded-2xl border border-stone-700">
               <div className="absolute inset-0 bg-stone-900/40 group-hover:bg-stone-900/20 transition-all z-10"></div>
               <img
-                src="https://images.unsplash.com/photo-1548567117-d7607ea0b7b6?q=80&w=2940&auto=format&fit=crop"
+                src="https://site-assets.plasmic.app/5155759d1ad1f278bc8eef4c0c17d24f.jpg"
                 alt="The Courbet"
                 className="w-full h-96 object-cover transform group-hover:scale-105 transition-transform duration-700"
               />
@@ -234,10 +239,10 @@ const App = () => {
 
             {/* Up and Coming */}
             <PropertyCard
-              name="Jungle Canyon"
+              name="Jungo Canyon"
               status="Up-and-Coming"
               desc="High potential geological formations identified in preliminary scans."
-              image="https://images.unsplash.com/photo-1622588699104-585a21087e50?q=80&w=1000&auto=format&fit=crop"
+              image="https://site-assets.plasmic.app/c23c0a5ad405836e4cfd269d36c905e1.jpg"
             />
             <PropertyCard
               name="Benita Canyon"
